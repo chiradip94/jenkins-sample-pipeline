@@ -1,13 +1,13 @@
 podTemplate(label: 'agent', containers: [
   containerTemplate(name: 'docker', image: 'docker', ttyEnabled: true, command: 'cat'),
-  containerTemplate(name: 'k8s', image: 'chiradip94/kubectl-helm:latest', ttyEnabled: true, command: 'cat', serviceAccount: 'jenkins-agent')
+  containerTemplate(name: 'k8s', image: 'chiradip94/kubectl-helm:latest', ttyEnabled: true, command: 'cat')
   ],
   volumes: [
     hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
-  ]) {
+  ], serviceAccount: 'jenkins-agent') {
   node('agent') {
     def imageName = "webapplication"
-    checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/chiradip94/sample-app.git']]])
+    checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/chiradip94/jenkins-sample-pipeline.git']]])
     stage('Docker build') {
       container('docker') {
         withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'pass', usernameVariable: 'user')]) {
