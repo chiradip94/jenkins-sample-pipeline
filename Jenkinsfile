@@ -22,7 +22,7 @@ podTemplate(label: 'agent', containers: [
     stage('Helm Deploy') {
       container('k8s') {
       sh """
-         helm upgrade --install ${imageName} ./helm --set image.repository='${env.user}/${imageName}' --set image.tag='${env.BUILD_NUMBER}' -n apps --create-namespace
+         helm upgrade --install ${imageName} ./helm/webapplication --set image.repository='${env.user}/${imageName}' --set image.tag='${env.BUILD_NUMBER}' -n apps --create-namespace
          """
       }
     }
