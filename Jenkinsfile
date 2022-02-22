@@ -2,6 +2,7 @@ properties([
   parameters([
      string(defaultValue: 'https://github.com/chiradip94/jenkins-sample-pipeline.git', description: 'Url of the repository to build the image from', name: 'repoUrl'),
      string(defaultValue: 'main', description: 'Branch for the repository', name: 'repoBranch'),
+     string(defaultValue: 'apps', description: 'Kubernetes Namespace where app is to be deployed', name: 'namespace'),
      string(defaultValue: 'dockerhub', description: 'Credential id for registry', name: 'credentialID')
   ])
 ])
@@ -30,7 +31,7 @@ podTemplate(label: 'agent', containers: [
       container('k8s') {
         withCredentials([usernamePassword(credentialsId: "${params.credentialID}", passwordVariable: 'pass', usernameVariable: 'user')]) {
         sh """
-           helm upgrade --install ${imageName} ./helm/webapplication --set image.repository='${env.user}/${imageName}' --set image.tag='${env.BUILD_NUMBER}' -n apps --create-namespace
+           helm upgrade --install ${imageName} ./helm/webapplication --set image.repository='${env.user}/${imageName}' --set image.tag='${env.BUILD_NUMBER}' -n ${params.namespace} --create-namespace
            """
         }
       }
